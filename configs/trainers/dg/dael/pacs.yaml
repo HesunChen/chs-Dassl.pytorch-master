@@ -1,0 +1,24 @@
+DATALOADER:
+  TRAIN_X:
+    SAMPLER: "RandomDomainSampler"
+    BATCH_SIZE: 30
+  TEST:
+    BATCH_SIZE: 100
+  TRAIN_U:
+    SAME_AS_X: False
+
+OPTIM:
+  NAME: "sgd"
+  LR: 0.002
+# 2022_4_29
+# MAX_EPOCH: 40
+
+# 2022_5_5
+  MAX_EPOCH: 60
+
+  
+  LR_SCHEDULER: "cosine"
+
+TRAINER:
+  DAEL:
+    STRONG_TRANSFORMS: ["random_flip", "cutout", "randaugment2", "normalize"]

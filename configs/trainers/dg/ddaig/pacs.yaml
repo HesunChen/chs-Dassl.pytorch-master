@@ -1,0 +1,29 @@
+INPUT:
+  PIXEL_MEAN: [0., 0., 0.]
+  PIXEL_STD: [1., 1., 1.]
+
+DATALOADER:
+  TRAIN_X:
+    BATCH_SIZE: 16
+  TEST:
+    BATCH_SIZE: 16
+
+# 2022_4_29
+#OPTIM:
+#  NAME: "sgd"
+#  LR: 0.0005
+# STEPSIZE: [20]
+# MAX_EPOCH: 25
+
+# 2022_5_5
+OPTIM:
+  NAME: "sgd"
+  LR: 0.002
+  MAX_EPOCH: 100
+  LR_SCHEDULER: "cosine"
+
+TRAINER:
+  DDAIG:
+    G_ARCH: "fcn_3x64_gctx"
+    WARMUP: 3
+    LMDA: 0.3
