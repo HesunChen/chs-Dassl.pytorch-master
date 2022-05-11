@@ -264,9 +264,7 @@ class COPADG(TrainerX):
             res = votes + normalized_mean
             
         elif self.inf_style == "most_confident":
-            p = torch.cat(p, 2).squeeze(1)
-            labels = p.max(1)[1] % self.n_domain
+            p = torch.cat(p, 2)
+            labels = p.max(2)[1] % self.n_domain
             res = F.one_hot(labels, self.num_classes)
-
-            
         return res
