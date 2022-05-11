@@ -280,3 +280,4 @@ _C.TRAINER.COPA.WEIGHT_U = 0.5  # weight on the unlabeled loss
 _C.TRAINER.COPA.CONF_THRE = 0.95  # confidence threshold
 _C.TRAINER.COPA.STRONG_TRANSFORMS = ()
 _C.TRAINER.COPA.LOCAL_ITER = 1
+_C.TRAINER.COPA.INF_STYLE = "mean"
