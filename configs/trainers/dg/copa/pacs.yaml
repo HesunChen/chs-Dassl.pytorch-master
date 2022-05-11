@@ -14,10 +14,18 @@ OPTIM:
 # MAX_EPOCH: 40
 
 # 2022_5_5
-  MAX_EPOCH: 60
+# MAX_EPOCH: 60
+
+# 2022_5_8
+  MAX_EPOCH: 100
   LR_SCHEDULER: "cosine"
 
 TRAINER:
   COPA:
     STRONG_TRANSFORMS: ["randaugment", "cutout"]
     LOCAL_ITER: 1
+
+#  INF_STYLE: "mean"
+
+# 2022_5_8
+    INF_STYLE: "most_confident"
