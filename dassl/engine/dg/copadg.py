@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from copy import deepcopy
 
@@ -11,6 +12,8 @@ from dassl.metrics import compute_accuracy
 from dassl.modeling import build_head, build_backbone
 from dassl.data.transforms import build_transform
 from dassl.modeling.ops.utils import create_onehot
+
+INF_STYLES = ["mean", "vote", "most_confident"]
 
 class Encoders(nn .Module):
     def __init__(self, cfg, model_cfg, num_classes, n_source, **kwargs):
@@ -113,12 +116,15 @@ class COPADG(TrainerX):
         self.split_batch = batch_size // n_domain
         self.n_domain = n_domain
 
-        self.conf_thre = cfg.TRAINER.DAEL.CONF_THRE
+        self.conf_thre = cfg.TRAINER.COPA.CONF_THRE
 
         self.local_iter = 0
 
+        self.inf_style = cfg.TRAINER.COPA.INF_STYLE
+
     def check_cfg(self, cfg):
         assert cfg.TRAINER.COPA.LOCAL_ITER > 0
+        assert cfg.TRAINER.COPA.INF_STYLE in INF_STYLES
 
     def build_data_loader(self):
         cfg = self.cfg
@@ -243,6 +249,22 @@ class COPADG(TrainerX):
             p_k = self.C(k, f)
             p_k = p_k.unsqueeze(1)
             p.append(p_k)
-        p = torch.cat(p, 1)
-        p = p.mean(1)
-        return p
+
+        if self.inf_style == "mean":
+            p = torch.cat(p, 1)
+            res = p.mean(1)
+
+        elif self.inf_style == "vote":
+            p = torch.cat(p, 1)
+            labels = p.max(2)[1]
+            one_hots = F.one_hot(labels, self.num_classes)
+            votes = one_hots.sum(1).squeeze(1)
+            conf_mean = p.mean(1)
+            normalized_mean = conf_mean / conf_mean.sum(1).unsqueeze(1)
+            res = votes + normalized_mean
+            
+        elif self.inf_style == "most_confident":
+            p = torch.cat(p, 2)
+            labels = p.max(2)[1] % self.n_domain
+            res = F.one_hot(labels, self.num_classes)
+        return res
