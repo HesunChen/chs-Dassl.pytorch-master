@@ -14,7 +14,10 @@ OPTIM:
 # MAX_EPOCH: 40
 
 # 2022_5_5
-  MAX_EPOCH: 60
+# MAX_EPOCH: 60
+
+# 2022_5_8
+  MAX_EPOCH: 100
 
   
   LR_SCHEDULER: "cosine"
